@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500" role="img" aria-label="We Believe Academics">
+  <title>We Believe Academics</title>
+
+  <!-- Background -->
+  <rect width="500" height="500" fill="#4d7fa2" rx="48"/>
+
+  <!-- ── LIGHT BULB (top center) ── -->
+  <!-- Radiating dashes -->
+  <g stroke="#f5edd8" stroke-width="5" stroke-linecap="round">
+    <line x1="250" y1="28" x2="250" y2="44"/>
+    <line x1="284" y1="36" x2="291" y2="50"/>
+    <line x1="216" y1="36" x2="209" y2="50"/>
+    <line x1="311" y1="56" x2="322" y2="62"/>
+    <line x1="189" y1="56" x2="178" y2="62"/>
+  </g>
+  <!-- Bulb globe -->
+  <circle cx="250" cy="95" r="40" fill="#f5edd8"/>
+  <!-- Bulb base -->
+  <rect x="234" y="132" width="32" height="10" rx="4" fill="#f5edd8"/>
+  <rect x="236" y="142" width="28" height="9" rx="3" fill="#f5edd8"/>
+  <!-- Filament hint inside bulb -->
+  <path d="M237 112 Q250 98 263 112" fill="none" stroke="#4d7fa2" stroke-width="3"/>
+
+  <!-- ── BRAIN (center, cream) ── -->
+  <g fill="#f5edd8" stroke="#1e3547" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Left hemisphere -->
+    <path d="M197 238 Q172 230 168 208 Q164 186 182 178 Q179 160 194 155 Q207 148 217 158 L217 240 Z"/>
+    <!-- Right hemisphere -->
+    <path d="M217 158 Q228 147 243 154 Q260 148 265 166 Q282 173 282 195 Q285 218 265 230 Q253 240 237 238 L217 240 Z"/>
+  </g>
+  <!-- Center divide -->
+  <line x1="217" y1="156" x2="217" y2="240" stroke="#1e3547" stroke-width="2" stroke-dasharray="4,3"/>
+  <!-- Left lobe ridges -->
+  <path d="M182 198 Q190 184 201 192" fill="none" stroke="#1e3547" stroke-width="2"/>
+  <path d="M178 216 Q187 202 199 210" fill="none" stroke="#1e3547" stroke-width="2"/>
+  <!-- Right lobe ridges -->
+  <path d="M235 188 Q244 174 256 182" fill="none" stroke="#1e3547" stroke-width="2"/>
+  <path d="M233 210 Q242 196 254 204" fill="none" stroke="#1e3547" stroke-width="2"/>
+
+  <!-- ── OPEN BOOK (bottom) ── -->
+  <!-- Left page -->
+  <path d="M42 388 C55 345 110 318 228 312 L228 408 C110 415 45 405 42 392 Z" fill="#f5edd8" stroke="#1e3547" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Right page -->
+  <path d="M458 388 C445 345 390 318 272 312 L272 408 C390 415 455 405 458 392 Z" fill="#f5edd8" stroke="#1e3547" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Spine overlap -->
+  <path d="M228 312 Q250 307 272 312 L272 408 Q250 413 228 408 Z" fill="#e8e0c6" stroke="#1e3547" stroke-width="2.5"/>
+  <!-- Spine clasp bottom -->
+  <ellipse cx="250" cy="412" rx="8" ry="12" fill="#1e3547"/>
+
+  <!-- ── STUDENT FIGURE (left, sitting on book) ── -->
+  <!-- Head -->
+  <circle cx="148" cy="270" r="30" fill="#1e3547"/>
+  <!-- Spiky hair -->
+  <path d="M120 264 Q132 238 166 248 Q162 268 148 270 Z" fill="#1e3547"/>
+  <!-- Neck -->
+  <rect x="138" y="298" width="20" height="14" fill="#1e3547"/>
+  <!-- Torso with mint shirt -->
+  <path d="M112 312 Q148 298 184 312 L188 360 Q148 368 108 360 Z" fill="#6ec8a4"/>
+  <!-- Shirt outline -->
+  <path d="M112 312 Q148 298 184 312" fill="none" stroke="#1e3547" stroke-width="2.5"/>
+  <!-- Arm reaching onto book -->
+  <path d="M178 335 Q205 342 228 348" stroke="#6ec8a4" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <!-- Hand on book -->
+  <ellipse cx="232" cy="350" rx="12" ry="9" fill="#1e3547"/>
+
+  <!-- ── TEACHER FIGURE (right, standing) ── -->
+  <!-- Body -->
+  <path d="M304 292 Q334 278 364 292 L372 368 Q334 378 296 368 Z" fill="#1e3547"/>
+  <!-- Neck -->
+  <rect x="326" y="264" width="20" height="16" fill="#1e3547"/>
+  <!-- Head -->
+  <circle cx="336" cy="244" r="30" fill="#1e3547"/>
+  <!-- Hair tuft on top -->
+  <path d="M310 238 Q328 215 360 226 Q356 248 336 244 Z" fill="#1e3547"/>
+  <!-- Glasses (steel blue, subtle) -->
+  <circle cx="326" cy="244" r="11" fill="none" stroke="#4d7fa2" stroke-width="3.5"/>
+  <circle cx="348" cy="244" r="11" fill="none" stroke="#4d7fa2" stroke-width="3.5"/>
+  <line x1="337" y1="244" x2="337" y2="244" stroke="#4d7fa2" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="315" y1="244" x2="308" y2="246" stroke="#4d7fa2" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="359" y1="244" x2="368" y2="246" stroke="#4d7fa2" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Pointer arm -->
+  <path d="M368 310 Q396 268 410 220" stroke="#1e3547" stroke-width="11" stroke-linecap="round" fill="none"/>
+  <!-- Pointer stick -->
+  <line x1="410" y1="220" x2="420" y2="195" stroke="#1e3547" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- ── BRAND TEXT ── -->
+  <text
+    x="250" y="472"
+    text-anchor="middle"
+    font-family="Nunito, 'Arial Rounded MT Bold', Arial, sans-serif"
+    font-size="33"
+    font-weight="700"
+    fill="white"
+    letter-spacing="-0.8"
+  >webelieveacademics</text>
+</svg>
