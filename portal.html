@@ -9,9 +9,193 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-  <link rel="stylesheet" href="assets/site.css">
+  <link rel="stylesheet" href="assets/site.css?v=20260322-portal3">
+  <style>
+    /* ── Portal-specific overrides using the logo-derived palette ── */
+
+    /* Admin tab navigation */
+    .admin-tab-nav {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 2px solid var(--wba-line);
+      flex-wrap: wrap;
+    }
+    .admin-tab-btn {
+      padding: 7px 18px;
+      border-radius: 999px;
+      border: 1.5px solid var(--wba-line);
+      background: var(--wba-panel);
+      color: var(--wba-body);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .admin-tab-btn:hover {
+      border-color: var(--wba-steel);
+      color: var(--wba-steel);
+      background: var(--wba-steel-light);
+    }
+    .admin-tab-btn.active {
+      background: var(--wba-steel);
+      border-color: var(--wba-steel);
+      color: #fff;
+    }
+    .admin-tab-btn.active-mint {
+      background: var(--wba-mint);
+      border-color: var(--wba-mint);
+      color: #fff;
+    }
+    .admin-tab-panel { display: none; }
+    .admin-tab-panel.active { display: block; }
+
+    /* Session header */
+    .session-header {
+      background: var(--wba-panel);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--wba-line);
+      box-shadow: var(--wba-shadow);
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .session-role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .session-role-badge.admin  { background: var(--wba-steel-light); color: var(--wba-steel-deep); }
+    .session-role-badge.parent { background: var(--wba-mint-light);  color: var(--wba-mint-deep);  }
+    .session-role-badge.teacher { background: var(--wba-cream); color: var(--wba-navy-mid); }
+    .session-role-badge.student { background: var(--wba-cream); color: var(--wba-navy-mid); }
+
+    /* Metric cards in summary */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .summary-card {
+      background: var(--wba-panel);
+      border-radius: var(--radius);
+      border: 1px solid var(--wba-line);
+      border-top: 3px solid var(--wba-steel);
+      box-shadow: var(--wba-shadow);
+      padding: 20px 18px;
+    }
+    .summary-card .val {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--wba-steel);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .summary-card .lbl {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--wba-body);
+    }
+    .summary-card.mint  { border-top-color: var(--wba-mint); }
+    .summary-card.mint .val { color: var(--wba-mint-deep); }
+    .summary-card.navy  { border-top-color: var(--wba-navy); }
+    .summary-card.navy .val { color: var(--wba-navy); }
+
+    /* Consultation + user cards */
+    .intake-card, .user-card {
+      background: var(--wba-panel);
+      border-radius: var(--radius);
+      border: 1px solid var(--wba-line);
+      box-shadow: var(--wba-shadow);
+      padding: 20px;
+      margin-bottom: 12px;
+      transition: box-shadow 0.15s ease;
+    }
+    .intake-card:hover, .user-card:hover { box-shadow: var(--wba-shadow-hover); }
+
+    .intake-card h5, .user-card h5 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--wba-ink);
+      margin-bottom: 2px;
+    }
+    .status-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .status-actions .btn { font-size: 0.75rem; padding: 4px 12px; }
+
+    /* User card password reset row */
+    .reset-row {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--wba-line);
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .reset-row.open { display: flex; }
+    .reset-row input { flex: 1 1 180px; }
+
+    /* Login / register panels */
+    .auth-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 767px) {
+      .auth-split { grid-template-columns: 1fr; }
+      .admin-tab-nav { gap: 4px; }
+      .admin-tab-btn { font-size: 0.78rem; padding: 6px 12px; }
+    }
+
+    /* System status console */
+    .console-line strong { color: var(--wba-steel); }
+    .console-line strong.mint { color: var(--wba-mint-deep); }
+    .console-line strong.muted { color: var(--wba-body); }
+
+    /* Student item in list */
+    .student-item {
+      cursor: pointer;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--wba-line);
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      transition: all 0.15s ease;
+      background: var(--wba-panel);
+    }
+    .student-item:hover, .student-item.active {
+      border-color: var(--wba-steel);
+      background: var(--wba-steel-light);
+    }
+    .student-item .name { font-weight: 700; color: var(--wba-ink); font-size: 0.95rem; }
+    .student-item .meta { font-size: 0.8rem; color: var(--wba-body); }
+
+    /* Page bg */
+    body.portal-shell { background: var(--wba-warm-white); }
+  </style>
 </head>
 <body class="portal-shell">
+
+  <!-- ── Navbar ── -->
   <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">
@@ -35,12 +219,16 @@
   </nav>
 
   <main class="container py-5" data-portal-root>
+
+    <!-- ── Portal hero ── -->
     <section class="portal-hero mb-4">
       <div class="portal-topbar">
         <div>
           <span class="eyebrow light mb-3">Portal</span>
           <h1 class="display-5 fw-bold mb-2">Two surfaces, one system.</h1>
-          <p class="mb-0">Parents can onboard and manage students. Admins can monitor intake, users, and operational health from the same live backend.</p>
+          <p class="mb-0" style="color:rgba(255,255,255,0.82)">
+            Parents manage students and track progress. Admins operate intake, users, and reporting — all from the same live backend.
+          </p>
         </div>
         <div class="api-badge">
           <strong>API</strong>
@@ -49,16 +237,21 @@
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         AUTH SECTION — shown when logged out
+    ════════════════════════════════════════════════════════════════ -->
     <section id="login-panel" data-auth-section>
-      <div class="portal-grid">
+      <div class="auth-split">
+
+        <!-- Register -->
         <div class="table-card">
-          <span class="eyebrow dark mb-3">Parent onboarding</span>
-          <h2 class="h4 mb-3">Create a parent account</h2>
-          <p class="muted-note">Use this for family onboarding. Admin accounts are created separately by operations.</p>
+          <span class="eyebrow dark mb-3">Family onboarding</span>
+          <h2 class="h4 mb-1">Create a parent account</h2>
+          <p class="muted-note mb-4">Use this to register a new family. Admin accounts are created by operations staff.</p>
           <form data-register-form>
             <div class="row g-3">
               <div class="col-md-6">
-                <label class="form-label">First name</label>
+                <label class="form-label">First name <span class="text-danger">*</span></label>
                 <input class="form-control" name="first_name" required>
               </div>
               <div class="col-md-6">
@@ -66,12 +259,12 @@
                 <input class="form-control" name="last_name">
               </div>
               <div class="col-md-6">
-                <label class="form-label">Email</label>
+                <label class="form-label">Email <span class="text-danger">*</span></label>
                 <input class="form-control" name="email" type="email" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Phone</label>
-                <input class="form-control" name="phone">
+                <input class="form-control" name="phone" type="tel">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Preferred contact</label>
@@ -82,18 +275,19 @@
                 </select>
               </div>
               <div class="col-md-6">
-                <label class="form-label">Password</label>
-                <input class="form-control" name="password" type="password" required>
+                <label class="form-label">Password <span class="text-danger">*</span></label>
+                <input class="form-control" name="password" type="password" required minlength="8">
               </div>
             </div>
             <button class="btn btn-success w-100 mt-4">Create parent account</button>
           </form>
         </div>
 
-        <div class="d-grid gap-4">
+        <!-- Login + system status -->
+        <div class="d-grid gap-4" style="align-content:start">
           <div class="table-card">
-            <span class="eyebrow dark mb-3">Login</span>
-            <h2 class="h4 mb-3">Sign in</h2>
+            <span class="eyebrow dark mb-3">Sign in</span>
+            <h2 class="h4 mb-4">Log in to your account</h2>
             <form data-login-form>
               <div class="mb-3">
                 <label class="form-label">Email</label>
@@ -105,54 +299,67 @@
               </div>
               <button class="btn btn-primary w-100">Log in</button>
             </form>
-            <div class="alert alert-info mt-3 mb-0" data-auth-status>Admins and parents both log in here.</div>
+            <div class="mt-3 muted-note" style="font-size:0.82rem">
+              Admins and parents both use this login. Your dashboard switches automatically based on your role.
+            </div>
+            <div class="mt-3" data-auth-status></div>
           </div>
 
           <div class="ai-panel">
-            <span class="eyebrow dark mb-3">System direction</span>
+            <span class="eyebrow dark mb-3">System status</span>
             <div class="ai-console">
-              <div class="console-line"><span>Parent onboarding</span><strong>Active</strong></div>
-              <div class="console-line"><span>Admin intake queue</span><strong>Active</strong></div>
-              <div class="console-line"><span>User status controls</span><strong>Active</strong></div>
-              <div class="console-line"><span>AI tutoring layer</span><strong>Planned</strong></div>
+              <div class="console-line"><span>Parent onboarding</span><strong class="mint">Active</strong></div>
+              <div class="console-line"><span>Admin intake queue</span><strong class="mint">Active</strong></div>
+              <div class="console-line"><span>User lifecycle mgmt</span><strong class="mint">Active</strong></div>
+              <div class="console-line"><span>AI tutoring layer</span><strong class="muted">Planned</strong></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         SESSION SHELL — shown when logged in
+    ════════════════════════════════════════════════════════════════ -->
     <section class="hidden" data-session-shell>
-      <div class="table-card mb-4">
-        <div class="portal-topbar">
+
+      <!-- Session header -->
+      <div class="session-header">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
           <div>
-            <div class="small text-uppercase text-muted">Logged in</div>
-            <h2 class="h3 mb-0" data-session-name></h2>
-            <div class="muted-note">Role: <span data-session-role></span></div>
+            <div class="small text-uppercase fw-bold" style="color:var(--wba-body);letter-spacing:.08em;font-size:.7rem">Logged in</div>
+            <h2 class="h4 mb-0 fw-black" data-session-name style="color:var(--wba-ink)"></h2>
           </div>
-          <div class="d-flex gap-2 flex-wrap">
-            <a class="btn btn-outline-primary" href="#login-panel" data-switch-account>Switch account</a>
-            <button class="btn btn-outline-primary" data-logout>Log out</button>
-          </div>
+          <span class="session-role-badge" data-session-role-badge></span>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-outline-primary btn-sm" data-switch-account>Switch account</button>
+          <button class="btn btn-outline-primary btn-sm" data-logout>Log out</button>
         </div>
       </div>
 
+      <!-- ─────────────────────────────────────────
+           PARENT VIEW
+      ────────────────────────────────────────── -->
       <section class="hidden" data-parent-section>
+
+        <!-- Add student + capabilities -->
         <div class="portal-grid mb-4">
           <div class="table-card">
-            <span class="eyebrow dark mb-3">Family setup</span>
-            <h3 class="h5">Add a student</h3>
+            <span class="eyebrow dark mb-3">Add a student</span>
+            <h3 class="h5 mb-4">Create student profile</h3>
             <form data-student-form>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">Student email</label>
+                  <label class="form-label">Student email <span class="text-danger">*</span></label>
                   <input class="form-control" name="email" type="email" required>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Grade level</label>
-                  <input class="form-control" name="grade_level" placeholder="7th">
+                  <input class="form-control" name="grade_level" placeholder="e.g. 7th">
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">First name</label>
+                  <label class="form-label">First name <span class="text-danger">*</span></label>
                   <input class="form-control" name="first_name" required>
                 </div>
                 <div class="col-md-6">
@@ -169,10 +376,10 @@
                 </div>
                 <div class="col-12">
                   <label class="form-label">Notes</label>
-                  <textarea class="form-control" name="notes" rows="3"></textarea>
+                  <textarea class="form-control" name="notes" rows="2"></textarea>
                 </div>
               </div>
-              <button class="btn btn-success w-100 mt-4">Create student</button>
+              <button class="btn btn-success w-100 mt-4">Add student</button>
             </form>
             <div class="mt-3" data-student-status></div>
           </div>
@@ -180,30 +387,32 @@
           <div class="ai-panel">
             <span class="eyebrow dark mb-3">Family capabilities</span>
             <div class="ai-console">
-              <div class="console-line"><span>Student creation</span><strong>Active</strong></div>
-              <div class="console-line"><span>Dashboard signals</span><strong>Active</strong></div>
-              <div class="console-line"><span>Course browsing</span><strong>Active</strong></div>
-              <div class="console-line"><span>Standards search</span><strong>Active</strong></div>
+              <div class="console-line"><span>Student creation</span><strong class="mint">Active</strong></div>
+              <div class="console-line"><span>Dashboard signals</span><strong class="mint">Active</strong></div>
+              <div class="console-line"><span>Course browsing</span><strong class="mint">Active</strong></div>
+              <div class="console-line"><span>Standards search</span><strong class="mint">Active</strong></div>
+              <div class="console-line"><span>AI curriculum layer</span><strong class="muted">Planned</strong></div>
             </div>
           </div>
         </div>
 
+        <!-- Students list + dashboard -->
         <div class="row g-4 mb-4">
           <div class="col-lg-4">
             <div class="table-card h-100">
-              <span class="eyebrow dark mb-3">Students</span>
-              <h3 class="h5">My students</h3>
-              <div class="list-group mt-3" data-students-list></div>
+              <span class="eyebrow dark mb-3">My students</span>
+              <div data-students-list class="mt-2"></div>
             </div>
           </div>
           <div class="col-lg-8">
             <div class="table-card h-100" data-student-dashboard>
-              <p class="muted-note mb-0">Choose a student to load dashboard data.</p>
+              <p class="muted-note mb-0">Select a student to load their dashboard.</p>
             </div>
           </div>
         </div>
 
-        <div class="row g-4">
+        <!-- Course catalog + teachers -->
+        <div class="row g-4 mb-4">
           <div class="col-lg-6">
             <div class="table-card">
               <span class="eyebrow dark mb-3">Catalog</span>
@@ -220,10 +429,11 @@
           </div>
         </div>
 
-        <div class="table-card mt-4">
+        <!-- Standards search -->
+        <div class="table-card">
           <span class="eyebrow dark mb-3">Curriculum intelligence</span>
-          <h3 class="h5">Standards search</h3>
-          <p class="muted-note">Query subject and grade standards from the backend to support planning and reporting.</p>
+          <h3 class="h5 mb-1">Standards search</h3>
+          <p class="muted-note mb-4">Query subject and grade standards to support planning and reporting.</p>
           <form class="row g-3 align-items-end" data-standards-form>
             <div class="col-md-4">
               <label class="form-label">Subject area</label>
@@ -238,92 +448,206 @@
             </div>
           </form>
           <div class="mt-4" data-standards-results>
-            <p class="muted-note mb-0">Run a standards search to load curriculum targets from the backend.</p>
+            <p class="muted-note mb-0">Run a search to load curriculum targets.</p>
           </div>
         </div>
       </section>
 
+      <!-- ─────────────────────────────────────────
+           ADMIN VIEW
+      ────────────────────────────────────────── -->
       <section class="hidden" data-admin-section>
+
+        <!-- Always-visible summary metrics -->
         <div class="table-card mb-4">
-          <span class="eyebrow dark mb-3">Admin dashboard</span>
-          <h3 class="h5 mb-3">Operations summary</h3>
-          <div class="metrics-grid" data-admin-summary-cards>
-            <div class="metric-card"><div class="metric-value">...</div><div class="muted-note">Loading summary</div></div>
+          <div class="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
+            <div>
+              <span class="eyebrow dark mb-2">Operations</span>
+              <h3 class="h5 mb-0">Live summary</h3>
+            </div>
+            <button class="btn btn-outline-primary btn-sm" data-admin-summary-refresh>Refresh</button>
+          </div>
+          <div class="summary-grid" data-admin-summary-cards>
+            <div class="summary-card"><div class="val">…</div><div class="lbl">Loading</div></div>
           </div>
         </div>
 
-        <div class="row g-4 mb-4">
-          <div class="col-lg-6">
-            <div class="table-card h-100">
-              <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-3">
-                <div>
-                  <span class="eyebrow dark mb-2">Consultations</span>
-                  <h3 class="h5 mb-0">Intake queue</h3>
-                </div>
-                <div class="d-flex gap-2">
-                  <select class="form-select" data-admin-consultation-filter>
-                    <option value="">All statuses</option>
-                    <option value="new">New</option>
-                    <option value="in_review">In review</option>
-                    <option value="contacted">Contacted</option>
-                    <option value="scheduled">Scheduled</option>
-                    <option value="closed">Closed</option>
-                  </select>
-                  <button class="btn btn-outline-primary" data-admin-consultations-refresh>Refresh</button>
-                </div>
-              </div>
-              <div data-admin-consultations-status class="mb-3 muted-note"></div>
-              <div data-admin-consultations-list class="d-grid gap-3"></div>
-            </div>
-          </div>
+        <!-- Tab nav -->
+        <div class="admin-tab-nav" data-admin-tab-nav>
+          <button class="admin-tab-btn active" data-admin-tab="intake">Intake queue</button>
+          <button class="admin-tab-btn" data-admin-tab="users">User management</button>
+          <button class="admin-tab-btn active-mint" data-admin-tab="create-user">+ Create user</button>
+          <button class="admin-tab-btn" data-admin-tab="students">All students</button>
+          <button class="admin-tab-btn" data-admin-tab="recent">Recent activity</button>
+        </div>
 
-          <div class="col-lg-6">
-            <div class="table-card h-100">
-              <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-3">
-                <div>
-                  <span class="eyebrow dark mb-2">Users</span>
-                  <h3 class="h5 mb-0">User management</h3>
-                </div>
-                <div class="d-flex gap-2">
-                  <select class="form-select" data-admin-user-filter>
-                    <option value="">All roles</option>
-                    <option value="admin">Admin</option>
+        <!-- ── Tab: Intake queue ── -->
+        <div class="admin-tab-panel active" data-admin-panel="intake">
+          <div class="table-card">
+            <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-4">
+              <div>
+                <span class="eyebrow dark mb-2">Consultations</span>
+                <h3 class="h5 mb-0">Intake queue</h3>
+              </div>
+              <div class="d-flex gap-2 flex-wrap">
+                <select class="form-select form-select-sm" data-admin-consultation-filter>
+                  <option value="">All statuses</option>
+                  <option value="new">New</option>
+                  <option value="in_review">In review</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="scheduled">Scheduled</option>
+                  <option value="closed">Closed</option>
+                </select>
+                <button class="btn btn-outline-primary btn-sm" data-admin-consultations-refresh>Refresh</button>
+              </div>
+            </div>
+            <div class="muted-note mb-3" data-admin-consultations-status></div>
+            <div data-admin-consultations-list></div>
+          </div>
+        </div>
+
+        <!-- ── Tab: User management ── -->
+        <div class="admin-tab-panel" data-admin-panel="users">
+          <div class="table-card">
+            <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-4">
+              <div>
+                <span class="eyebrow dark mb-2">Users</span>
+                <h3 class="h5 mb-0">User management</h3>
+              </div>
+              <div class="d-flex gap-2 flex-wrap">
+                <select class="form-select form-select-sm" data-admin-user-filter>
+                  <option value="">All roles</option>
+                  <option value="admin">Admin</option>
+                  <option value="parent">Parent</option>
+                  <option value="teacher">Teacher</option>
+                  <option value="student">Student</option>
+                </select>
+                <button class="btn btn-outline-primary btn-sm" data-admin-users-refresh>Refresh</button>
+              </div>
+            </div>
+            <div class="muted-note mb-3" data-admin-users-status></div>
+            <div data-admin-users-list></div>
+          </div>
+        </div>
+
+        <!-- ── Tab: Create user ── -->
+        <div class="admin-tab-panel" data-admin-panel="create-user">
+          <div class="table-card">
+            <span class="eyebrow dark mb-3">Admin action</span>
+            <h3 class="h5 mb-1">Create a new user</h3>
+            <p class="muted-note mb-4">
+              Create any account type directly. Password is optional — accounts without one cannot use local login until a password is set via reset.
+            </p>
+            <form data-admin-create-user-form>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Role <span class="text-danger">*</span></label>
+                  <select class="form-select" name="role" required data-create-user-role>
                     <option value="parent">Parent</option>
-                    <option value="teacher">Teacher</option>
                     <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="admin">Admin</option>
                   </select>
-                  <button class="btn btn-outline-primary" data-admin-users-refresh>Refresh</button>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Email <span class="text-danger">*</span></label>
+                  <input class="form-control" name="email" type="email" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">First name <span class="text-danger">*</span></label>
+                  <input class="form-control" name="first_name" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Last name</label>
+                  <input class="form-control" name="last_name">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Password <span class="text-muted fw-normal">(optional)</span></label>
+                  <input class="form-control" name="password" type="password" minlength="8"
+                         placeholder="Min 8 chars — leave blank if not needed yet">
+                </div>
+
+                <!-- Parent-specific -->
+                <div class="col-md-6 d-none" data-role-field="parent">
+                  <label class="form-label">Phone</label>
+                  <input class="form-control" name="phone" type="tel">
+                </div>
+                <div class="col-md-6 d-none" data-role-field="parent">
+                  <label class="form-label">Preferred contact</label>
+                  <select class="form-select" name="preferred_contact">
+                    <option value="email">Email</option>
+                    <option value="phone">Phone</option>
+                    <option value="text">Text</option>
+                  </select>
+                </div>
+
+                <!-- Student-specific -->
+                <div class="col-md-6 d-none" data-role-field="student">
+                  <label class="form-label">Grade level</label>
+                  <input class="form-control" name="grade_level" placeholder="e.g. 8th">
+                </div>
+                <div class="col-md-6 d-none" data-role-field="student">
+                  <label class="form-label">Parent account ID <span class="text-muted fw-normal">(UUID)</span></label>
+                  <input class="form-control" name="parent_id" placeholder="Optional — link to existing parent">
+                </div>
+                <div class="col-md-6 d-none" data-role-field="student">
+                  <label class="form-label">School name</label>
+                  <input class="form-control" name="school_name">
                 </div>
               </div>
-              <div data-admin-users-status class="mb-3 muted-note"></div>
-              <div data-admin-users-list class="d-grid gap-3"></div>
+
+              <div class="d-flex gap-3 align-items-center mt-4">
+                <button class="btn btn-success px-5">Create user</button>
+                <button type="button" class="btn btn-outline-primary" data-admin-create-user-reset>Clear form</button>
+              </div>
+            </form>
+            <div data-create-user-status class="mt-3"></div>
+          </div>
+        </div>
+
+        <!-- ── Tab: All students ── -->
+        <div class="admin-tab-panel" data-admin-panel="students">
+          <div class="table-card">
+            <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-4">
+              <div>
+                <span class="eyebrow dark mb-2">Students</span>
+                <h3 class="h5 mb-0">All students</h3>
+              </div>
+              <button class="btn btn-outline-primary btn-sm" data-admin-students-refresh>Refresh</button>
+            </div>
+            <div class="muted-note mb-3" data-admin-students-status></div>
+            <div data-admin-students-list></div>
+          </div>
+        </div>
+
+        <!-- ── Tab: Recent activity ── -->
+        <div class="admin-tab-panel" data-admin-panel="recent">
+          <div class="row g-4">
+            <div class="col-lg-6">
+              <div class="ai-panel h-100">
+                <span class="eyebrow dark mb-3">Recent users</span>
+                <div data-admin-recent-users class="d-grid gap-2"></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="ai-panel h-100">
+                <span class="eyebrow dark mb-3">Recent consultations</span>
+                <div data-admin-recent-consultations class="d-grid gap-2"></div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="row g-4">
-          <div class="col-lg-6">
-            <div class="ai-panel h-100">
-              <span class="eyebrow dark mb-3">Recent users</span>
-              <div data-admin-recent-users class="d-grid gap-2"></div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="ai-panel h-100">
-              <span class="eyebrow dark mb-3">Recent consultations</span>
-              <div data-admin-recent-consultations class="d-grid gap-2"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </section>
+      </section><!-- /admin -->
+    </section><!-- /session-shell -->
+
   </main>
 
-  <footer class="text-white text-center py-4">
-    <p class="mb-0">&copy; 2026 We Believe Academics. All rights reserved.</p>
+  <footer class="text-center py-4" style="border-top:3px solid var(--wba-mint)">
+    <p class="mb-0" style="color:rgba(255,255,255,0.7);font-size:.85rem">&copy; 2026 We Believe Academics. All rights reserved.</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-  <script src="assets/app.js"></script>
+  <script src="assets/app.js?v=20260322-portal3"></script>
 </body>
 </html>

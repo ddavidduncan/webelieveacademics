@@ -74,6 +74,11 @@ export const dashboardRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.notFound('Student not found');
     }
 
+    // Authorization: parent may only view their own linked student; admin may view all
+    if (request.user.role === 'parent' && student.parent_id !== request.user.sub) {
+      return reply.forbidden('You are not authorised to view this student');
+    }
+
     return {
       student,
       enrollments: enrollmentsResult.rows,
