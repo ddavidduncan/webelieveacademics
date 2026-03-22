@@ -1,0 +1,318 @@
+WEBELIEVE PORTAL / AUTH / DB HANDOFF
+Date: 2026-03-22 UTC
+
+Purpose
+- This document explains the real current state of the Webelieve account system, portal wiring, and PostgreSQL persistence so another AI can continue the admin/portal/auth work without re-discovering the system.
+
+System topology
+- Public site origin: this machine
+- Public domain: `https://webelieveacademics.com`
+- Marketing frontend: built from `frontend/web/` and deployed into `/var/www/webelieveacademics.com/html`
+- Portal/admin frontend: static page at `https://webelieveacademics.com/portal.html`
+- API backend: Fastify on `127.0.0.1:4000`
+- Public API path: `https://webelieveacademics.com/api/v1`
+- Database: PostgreSQL on `127.0.0.1:55432`
+- Database name: `webelieve`
+- Database user: `webelieve`
+
+Primary code locations
+- Repo root: `/home/keycloakadmin/shared/webelieveacademics.com/frontend`
+- Portal frontend:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/portal.html`
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/assets/app.js`
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/assets/site.css`
+- Next marketing frontend:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/web`
+- Auth routes:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/src/routes/auth.ts`
+- Student routes:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/src/routes/students.ts`
+- Dashboard route:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/src/routes/dashboard.ts`
+- Admin routes:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/src/routes/admin.ts`
+- Auth plugin:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/src/plugins/auth.ts`
+- Base schema:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/webelieve_schema.sql`
+- Backend auth extension schema:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/db/002_backend_extensions.sql`
+- Consultation schema:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/db/003_consultations.sql`
+
+What is real and already wired
+- Parent self-registration is real.
+- Parent login is real.
+- Admin login is real.
+- Student creation from the parent portal is real.
+- Parent-linked student listing is real.
+- Student dashboard data is real.
+- Consultation intake is real.
+- Admin user listing and enable/disable are real.
+- Admin consultation queue and status updates are real.
+
+This is not mock data.
+- The portal calls the live Fastify API.
+- The API writes and reads from PostgreSQL on this machine.
+
+Authorization model
+- JWT auth is implemented with `@fastify/jwt`.
+- Route guard plugin:
+  - `/home/keycloakadmin/shared/webelieveacademics.com/frontend/src/plugins/auth.ts`
+- Decorators:
+  - `fastify.authenticate`
+  - `fastify.authorizeAdmin`
+- `authorizeAdmin` verifies the JWT and requires `request.user.role === 'admin'`
+
+Current account creation flow
+1. Parent registration
+- Route: `POST /api/v1/auth/register-parent`
+- Source: `src/routes/auth.ts`
+- Validates:
+  - `email`
+  - `password` min 8
+  - `firstName`
+  - optional `lastName`, `displayName`, `phone`
+  - `preferredContact` in `email | phone | text`
+- Database writes:
+  1. `users`
+  2. `parents`
+  3. `auth_local_credentials`
+- Token:
+  - JWT is issued immediately after registration
+- Result:
+  - parent is created and logged in immediately
+
+2. Login
+- Route: `POST /api/v1/auth/login`
+- Source: `src/routes/auth.ts`
+- Reads:
+  - `users`
+  - `auth_local_credentials`
+- Checks:
+  - user exists
+  - `users.is_active = true`
+  - password hash matches
+- Writes:
+  - updates `users.last_login_at`
+- Token:
+  - JWT is returned on success
+
+3. Current student creation flow
+- Route: `POST /api/v1/students`
+- Source: `src/routes/students.ts`
+- Requires JWT auth
+- Validates:
+  - `email`
+  - `firstName`
+  - optional `lastName`, `displayName`, `gradeLevel`, `dateOfBirth`, `parentId`, `schoolName`, `notes`
+- Database writes:
+  1. `users` with role `student`
+  2. `students`
+- Parent linkage:
+  - `students.parent_id` defaults to `request.user.sub` unless `parentId` is supplied
+
+Portal data reads
+1. Parent-linked student list
+- Route: `GET /api/v1/parents/me/students`
+- Source: `src/routes/students.ts`
+- Allowed roles:
+  - `parent`
+  - `admin`
+- Reads:
+  - `students`
+  - `users`
+- Important limitation:
+  - the query uses `where s.parent_id = request.user.sub`
+  - this works correctly for parents
+  - for admins, it will only show students whose `parent_id` equals the admin user id, which is usually none
+  - so the current admin role is allowed by policy but not truly useful for this endpoint
+
+2. Student dashboard
+- Route: `GET /api/v1/dashboard/student/:studentId`
+- Source: `src/routes/dashboard.ts`
+- Requires JWT auth
+- Reads:
+  - `users`
+  - `students`
+  - `student_enrollments`
+  - `courses`
+  - `grades`
+  - `tests`
+  - `student_learning_preferences`
+  - `teaching_methods`
+- Important gap:
+  - there is no ownership check ensuring a parent can only load their own student
+  - any authenticated user with a student UUID can currently query that student dashboard
+  - this should be fixed
+
+Current admin capabilities
+- Summary:
+  - `GET /api/v1/admin/summary`
+- Users list:
+  - `GET /api/v1/admin/users`
+- User active toggle:
+  - `PATCH /api/v1/admin/users/:userId`
+- Consultation list:
+  - `GET /api/v1/admin/consultations`
+- Consultation status update:
+  - `PATCH /api/v1/admin/consultations/:consultationRequestId`
+
+Current admin limitations
+- No admin route to create users manually by role
+- No teacher creation flow
+- No teacher self-registration flow
+- No student credential creation flow
+- No password reset flow
+- No refresh-token flow in active use
+- No email verification flow
+- No session revocation UI
+- No audit logging for admin actions
+
+Database tables directly involved in auth/portal
+1. `users`
+- Source schema: `webelieve_schema.sql`
+- Core identity record
+- Important columns:
+  - `user_id`
+  - `firebase_uid`
+  - `email`
+  - `first_name`
+  - `last_name`
+  - `display_name`
+  - `role`
+  - `is_active`
+  - `last_login_at`
+
+2. `parents`
+- Source schema: `webelieve_schema.sql`
+- Extended parent profile
+- Important columns:
+  - `parent_id`
+  - `phone`
+  - `preferred_contact`
+
+3. `students`
+- Source schema: `webelieve_schema.sql`
+- Extended student profile
+- Important columns:
+  - `student_id`
+  - `grade_level`
+  - `date_of_birth`
+  - `parent_id`
+  - `school_name`
+  - `notes`
+
+4. `auth_local_credentials`
+- Source schema: `db/002_backend_extensions.sql`
+- Stores bcrypt/argon password hash for local auth
+- Important columns:
+  - `user_id`
+  - `password_hash`
+  - `password_updated_at`
+
+5. `api_refresh_tokens`
+- Source schema: `db/002_backend_extensions.sql`
+- Exists but is not currently used in the portal auth flow
+
+6. `consultation_requests`
+- Source schema: `db/003_consultations.sql`
+- Intake table used by contact and admin consultation queue
+
+Live database snapshot at time of handoff
+- Query results from the live local Postgres instance:
+- Role counts:
+  - `admin`: 1
+  - `parent`: 3
+  - `student`: 3
+- Table counts:
+  - `consultation_requests`: 3
+  - `auth_local_credentials`: 4
+  - `students`: 3
+  - `parents`: 3
+
+Interpretation of those counts
+- There is 1 admin account with local credentials
+- There are 3 parents with local credentials
+- Students currently do not have their own local credentials
+- Student rows are created as user records plus student profile rows, but not login credentials
+- That is why `auth_local_credentials` count is 4 while `users` total is 7
+
+Known functional gaps another AI should address next
+1. Student/teacher/admin account lifecycle
+- Add admin CRUD routes to create:
+  - admins
+  - teachers
+  - students with optional login credentials
+  - parents manually
+- Add ability to issue or reset passwords from admin
+
+2. Authorization hardening
+- Restrict `GET /dashboard/student/:studentId` so:
+  - parent can only access their own linked students
+  - admin can access all
+  - teacher rules are explicit
+- Decide whether `GET /parents/me/students` should really allow admins, and if yes, add an admin-specific variant
+
+3. Refresh tokens and session model
+- `api_refresh_tokens` table exists but the flow is not implemented
+- Current portal uses only one JWT stored in localStorage
+- Consider:
+  - short-lived access token
+  - refresh token rotation
+  - logout invalidation
+
+4. Password reset / email verification
+- Missing today
+- Needed for a real production auth system
+
+5. Teacher portal
+- No teacher-facing auth/UI flow exists yet
+
+6. Admin UX
+- Admin dashboard exists in `portal.html`
+- It is functional but still basic
+- Next major additions:
+  - user creation forms
+  - password reset actions
+  - student-parent reassignment
+  - teacher assignment to courses
+  - richer consultation CRM workflow
+
+7. Portal code structure
+- Current portal is still a static HTML + JS page:
+  - `portal.html`
+  - `assets/app.js`
+- It works, but longer term it should likely be migrated into the Next frontend so auth/admin UX is not split between:
+  - `web/` marketing frontend
+  - separate static portal
+
+Important current deployment note
+- The public site is now served locally from this machine.
+- Marketing pages come from the built `web/` export.
+- The portal remains a separate static page at `/portal.html`.
+- Portal JS/CSS were cache-busted after an asset caching issue:
+  - `portal.html` now loads `/assets/app.js?v=20260322-portal2`
+  - `portal.html` now loads `/assets/site.css?v=20260322-portal2`
+
+Useful live tests
+- Admin login:
+  - `POST https://webelieveacademics.com/api/v1/auth/login`
+- Parent register:
+  - `POST https://webelieveacademics.com/api/v1/auth/register-parent`
+- Session check:
+  - `GET https://webelieveacademics.com/api/v1/auth/me`
+- Parent students:
+  - `GET https://webelieveacademics.com/api/v1/parents/me/students`
+- Student dashboard:
+  - `GET https://webelieveacademics.com/api/v1/dashboard/student/:studentId`
+- Admin summary:
+  - `GET https://webelieveacademics.com/api/v1/admin/summary`
+
+Bottom line
+- The current portal is genuinely wired into the backend and PostgreSQL.
+- Parent account creation is real.
+- Login is real.
+- Student creation is real.
+- Admin read/toggle ops are real.
+- The next AI should focus on hardening authorization and completing the missing account lifecycle features.
