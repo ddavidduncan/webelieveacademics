@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: webelieve-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: webelieve
+      POSTGRES_USER: webelieve
+      POSTGRES_PASSWORD: webelieve_dev_password
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./webelieve_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+      - ./db/002_backend_extensions.sql:/docker-entrypoint-initdb.d/002_backend_extensions.sql:ro
+      - ./db/003_consultations.sql:/docker-entrypoint-initdb.d/003_consultations.sql:ro
+
+  redis:
+    image: redis:7
+    container_name: webelieve-redis
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -1,0 +1,161 @@
+WEBELIEVEACADEMICS.COM CLOUDFLARE CUTOVER STEPS
+Date: 2026-03-22 UTC
+
+Current situation
+- The Webelieve backend and frontend are now deployed on the local origin machine.
+- The origin machine public IP is: 108.249.142.225
+- NGINX on the origin machine is already configured to serve:
+  - the static frontend for webelieveacademics.com
+  - the backend API under /api/
+- The Node API is running persistently as a systemd service named:
+  - webelieve-api
+- The public domain is still going through Cloudflare to its old origin/path.
+- The local origin is ready, but Cloudflare still needs to be pointed at this machine.
+
+Important TLS note before you change anything
+- The origin machine is currently serving HTTPS with a temporary local certificate.
+- Because of that, Cloudflare SSL/TLS mode should be set to:
+  - Full
+- Do NOT use:
+  - Full (strict)
+  until a trusted origin certificate is installed on the origin machine.
+- If Cloudflare is set to Full (strict) during cutover, the site may fail even if DNS is correct.
+
+What the origin machine is already prepared to do
+- Serve the frontend pages:
+  - /
+  - /about.html
+  - /programs.html
+  - /how-it-works.html
+  - /contact.html
+  - /portal.html
+- Proxy the backend API:
+  - /api/v1/...
+- Redirect HTTP to HTTPS
+
+Cloudflare changes required
+
+1. Log into Cloudflare
+- Open the Cloudflare dashboard.
+- Select the zone for:
+  - webelieveacademics.com
+
+2. Check SSL/TLS mode first
+- Go to:
+  - SSL/TLS
+- Find the current encryption mode.
+- Set it to:
+  - Full
+- Do not leave it on Full (strict) until the origin gets a proper trusted cert.
+
+3. Open DNS settings
+- Go to:
+  - DNS
+
+4. Update the apex/root record
+- Find the DNS record for:
+  - webelieveacademics.com
+- It will normally be one of:
+  - A record for @
+  - flattened CNAME for @
+- Change the origin target so that traffic ultimately points to:
+  - 108.249.142.225
+
+Recommended target:
+- Type: A
+- Name: @
+- IPv4 address: 108.249.142.225
+- Proxy status: Proxied
+
+5. Update the www record
+- Find the record for:
+  - www
+- Point it to the same origin.
+
+Recommended options:
+- Option A:
+  - Type: CNAME
+  - Name: www
+  - Target: webelieveacademics.com
+  - Proxy status: Proxied
+
+- Option B:
+  - Type: A
+  - Name: www
+  - IPv4 address: 108.249.142.225
+  - Proxy status: Proxied
+
+Preferred approach:
+- Use CNAME for www -> webelieveacademics.com if convenient.
+
+6. Save the DNS changes
+- Confirm the edited records are saved.
+
+7. Optional: lower TTL if Cloudflare allows manual TTL on any DNS-only records
+- If TTL is editable and you want faster recheck behavior, lower it before finalizing.
+- If records are Proxied, Cloudflare may abstract TTL behavior.
+
+8. Do NOT change unrelated records
+- Only update:
+  - webelieveacademics.com
+  - www.webelieveacademics.com
+- Do not alter mail, verification, or other subdomain records unless you intend to move them too.
+
+What to expect after the Cloudflare change
+- The site may not flip instantly everywhere due to cache propagation.
+- Once Cloudflare has the new origin, the domain should begin serving from this machine.
+- Because Cloudflare remains in front, public DNS may still show Cloudflare IPs. That is normal.
+- The important change is not the public edge IPs. The important change is that Cloudflare’s origin target is now this machine.
+
+How to verify after you make the Cloudflare change
+- After saving the DNS/origin change, tell the operating AI to verify:
+  - https://webelieveacademics.com/
+  - https://www.webelieveacademics.com/
+  - https://webelieveacademics.com/contact.html
+  - https://webelieveacademics.com/portal.html
+  - https://webelieveacademics.com/api/v1/courses
+  - POST https://webelieveacademics.com/api/v1/consultations
+
+Expected behavior after successful cutover
+- Homepage loads with the redesigned AI-first frontend.
+- Contact page loads and submits to the live backend.
+- Portal page loads and uses the backend on this machine.
+- /api/v1/courses returns JSON, currently likely an empty array.
+- Consultation intake returns a JSON success response.
+
+Known current limitation
+- The origin currently uses a temporary local HTTPS certificate.
+- Therefore:
+  - Cloudflare SSL mode should be Full
+  - not Full (strict)
+- After cutover is complete, a later follow-up task should install:
+  - a Cloudflare Origin Certificate
+  or
+  - a trusted certificate such as Let’s Encrypt
+  so that Full (strict) can be enabled safely.
+
+Machine details for the next operator or AI
+- Origin public IP:
+  - 108.249.142.225
+- Frontend deployed at:
+  - /var/www/webelieveacademics.com/html
+- API service name:
+  - webelieve-api
+- API local bind:
+  - 0.0.0.0:4000
+- NGINX vhost on machine:
+  - /etc/nginx/conf.d/webelieveacademics.com.conf
+
+What is already verified locally on the origin
+- Local HTTPS homepage serves correctly.
+- Local API proxy through NGINX works.
+- Consultation submission through NGINX works.
+- Backend service is persistent and active.
+
+What another AI should do after the Cloudflare change
+1. Verify the public domain is serving the redesigned site.
+2. Verify the portal loads from the new origin.
+3. Verify /api/v1/courses returns JSON publicly.
+4. Verify consultation intake works publicly.
+5. If Cloudflare shows SSL/origin issues, check whether SSL mode is incorrectly set to Full (strict).
+6. After successful cutover, plan installation of a proper origin certificate.

@@ -1,0 +1,18 @@
+[Unit]
+Description=We Believe Academics API
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=keycloakadmin
+WorkingDirectory=/home/keycloakadmin/shared/webelieveacademics.com
+EnvironmentFile=/home/keycloakadmin/shared/webelieveacademics.com/.env
+ExecStart=/usr/bin/node /home/keycloakadmin/shared/webelieveacademics.com/dist/server.js
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
