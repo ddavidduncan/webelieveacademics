@@ -1,0 +1,28 @@
+# Next.js
+.next/
+out/
+dist/
+
+# Dependencies
+node_modules/
+
+# Environment (never commit real secrets)
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeScript build cache
+*.tsbuildinfo
+next-env.d.ts
